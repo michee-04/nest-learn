@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AsyncStorageMiddleware } from './async-storage.midleware';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -24,4 +25,8 @@ import { UserModule } from './user/user.module';
     UserModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AsyncStorageMiddleware).forRoutes('*');
+  }
+}
