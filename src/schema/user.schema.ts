@@ -1,18 +1,38 @@
-import mongoose from 'mongoose';
+import { BaseModel, createBaseSchema } from '@nodesandbox/repo-framework';
+import { IUserModel } from './types';
 
-export const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+export const USER_MODEL_NAME = 'User';
+
+const userSchema = createBaseSchema<IUserModel>(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    username: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  username: {
-    type: String,
-    required: true,
+  {
+    modelName: USER_MODEL_NAME,
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: String,
-});
+);
+
+const UserModel = new BaseModel<IUserModel>(
+  USER_MODEL_NAME,
+  userSchema,
+).getModel();
+
+export { UserModel };
