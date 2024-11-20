@@ -1,4 +1,4 @@
-import { BaseModel, createBaseSchema } from '@nodesandbox/repo-framework';
+import { createBaseSchema, BaseModel } from '@nodesandbox/repo-framework';
 import { IUserModel } from './types';
 
 export const USER_MODEL_NAME = 'User';
@@ -35,4 +35,4 @@ const UserModel = new BaseModel<IUserModel>(
   userSchema,
 ).getModel();
 
-export { UserModel };
+export { UserModel, userSchema };

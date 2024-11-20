@@ -1,28 +1,26 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+// user.service.ts
+import { Injectable } from '@nestjs/common';
+import { BaseService } from '@nodesandbox/repo-framework';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { User } from './dtos/user.interface';
+import { UserRepository } from './user.repo';
+import { IUserModel } from 'src/schema/types';
 
 @Injectable()
-export class UserService {
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
-
-  async create(createDto: CreateUserDto): Promise<User> {
-    const newUser = new this.userModel(createDto);
-    return await newUser.save();
-  }
-
-  async findAll(): Promise<User[]> {
-    return await this.userModel.find().exec();
-  }
-
-  async findById(id: string): Promise<User> {
-    const user = await this.userModel.findById(id).exec();
-    if (!user) {
-      throw new NotFoundException('Utilisateur introuvable');
-    }
-
-    return user;
+export class UserService extends BaseService<IUserModel, UserRepository> {
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<IUserModel>,
+  ) {
+    const userRepo = new UserRepository(userModel);
+    super(userRepo, {
+      softDelete: true,
+      search: {
+        enabled: true,
+        fields: ['name', 'email', 'username'],
+      },
+      filter: {
+        allowedFields: [],
+      },
+    });
   }
 }

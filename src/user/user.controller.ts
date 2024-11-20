@@ -1,15 +1,38 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { UserService } from './user.service';
+import { IUserModel } from 'src/schema/types';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    console.log('⚡⚡⚡☂️☂️☂️ createUserDto : ', createUserDto);
+  @Get()
+  async findAll() {
+    const result = await this.userService.findAll();
+    if (result.success) {
+      return result;
+    } else {
+      throw result;
+    }
+  }
 
-    return await this.userService.create(createUserDto);
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const result = await this.userService.findById(id);
+    if (result.success) {
+      return result;
+    } else {
+      throw result;
+    }
+  }
+
+  @Post()
+  async create(@Body() createUserDto: Partial<IUserModel>) {
+    const result = await this.userService.create(createUserDto);
+    if (result.success) {
+      return result;
+    } else {
+      throw result;
+    }
   }
 }
