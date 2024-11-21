@@ -1,10 +1,10 @@
 // user.service.ts
 import { Injectable } from '@nestjs/common';
-import { BaseService } from '@nodesandbox/repo-framework';
 import { InjectModel } from '@nestjs/mongoose';
+import { BaseService } from '@nodesandbox/repo-framework';
 import { Model } from 'mongoose';
-import { UserRepository } from './user.repo';
 import { IUserModel } from 'src/schema/types';
+import { UserRepository } from './user.repo';
 
 @Injectable()
 export class UserService extends BaseService<IUserModel, UserRepository> {

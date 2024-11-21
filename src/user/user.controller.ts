@@ -1,15 +1,16 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Put,
-  Delete,
-  Body,
-  Param,
   Query,
 } from '@nestjs/common';
-import { UserService } from './user.service';
 import { IUserModel } from 'src/schema/types';
+import { parseSortParam } from 'src/utils';
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
@@ -22,12 +23,15 @@ export class UserController {
     @Query('search') search?: string,
     @Query('sortBy') sortBy?: string,
   ) {
-    const result = await this.userService.findAll({
+    const filters = {
       page,
       limit,
       searchTerm: search,
-      sort: sortBy ? { [sortBy]: 1 } : undefined,
-    });
+      sort: parseSortParam(sortBy),
+    };
+    console.log('☂️☂️☂️', filters);
+
+    const result = await this.userService.findAll(filters);
     if (result.success) {
       return result;
     } else {
@@ -37,7 +41,7 @@ export class UserController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const result = await this.userService.findById(id);
+    const result = await this.userService.findOne({ _id: id });
     if (result.success) {
       return result;
     } else {
@@ -60,7 +64,7 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: Partial<IUserModel>,
   ) {
-    const result = await this.userService.updateById(id, updateUserDto);
+    const result = await this.userService.update({ _id: id }, updateUserDto);
     if (result.success) {
       return result;
     } else {
@@ -71,7 +75,7 @@ export class UserController {
   // (soft delete)
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    const result = await this.userService.deleteById(id);
+    const result = await this.userService.delete({ _id: id });
     if (result.success) {
       return result;
     } else {
@@ -81,6 +85,8 @@ export class UserController {
 
   @Post(':id/restore')
   async restore(@Param('id') id: string) {
+    console.log('⚡⚡⚡⚡☂️☂️☂️☂️ id : ', id);
+
     const result = await this.userService.restoreById(id);
     if (result.success) {
       return result;
