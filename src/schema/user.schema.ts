@@ -1,4 +1,4 @@
-import { createBaseSchema, BaseModel } from '@nodesandbox/repo-framework';
+import { BaseModel, createBaseSchema } from '@nodesandbox/repo-framework';
 import { IUserModel } from './types';
 
 export const USER_MODEL_NAME = 'User';
@@ -8,11 +8,11 @@ const userSchema = createBaseSchema<IUserModel>(
     name: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
     },
     username: {
       type: String,
-      unique: true,
+      // unique: true,
       required: true,
     },
     email: {
